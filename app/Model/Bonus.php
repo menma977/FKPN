@@ -8,9 +8,10 @@ class Bonus extends Model
 {
     protected $fillable = [
         'user',
-        'investment_id',
+        'invest_id',
         'description',
         'debit',
         'credit',
+        'status',
     ];
 }

@@ -55,7 +55,40 @@ class UsersTableSeeder extends Seeder
         DB::table('binaries')->insert([
             'sponsor' => '1',
             'user' => '2',
-            'position' => 0
+            'position' => 0,
+            'invest' => 1
+        ]);
+
+        DB::table('investments')->insert([
+            'user' => '1',
+            'reinvest' => '1',
+            'join' => '500000',
+            'package' => '1500000',
+            'profit' => '0',
+        ]);
+
+        DB::table('investments')->insert([
+            'user' => '2',
+            'reinvest' => '1',
+            'join' => '500000',
+            'package' => '1500000',
+            'profit' => '0',
+        ]);
+
+        DB::table('bonuses')->insert([
+            'user' => '1',
+            'invest_id' => '1',
+            'description' => 'Bonus Sponsor',
+            'debit' => '0',
+            'credit' => '75000',
+        ]);
+
+        DB::table('vocer_points')->insert([
+            'user' => '1',
+            'bonus_id' => '1',
+            'description' => 'Bonus Sponsor',
+            'debit' => '75000',
+            'credit' => '0',
         ]);
     }
 }

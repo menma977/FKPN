@@ -8,9 +8,10 @@ class VocerPoint extends Model
 {
     protected $fillable = [
         'user',
-        'investment_id',
+        'bonus_id',
         'description',
         'debit',
         'credit',
+        'status',
     ];
 }

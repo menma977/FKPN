@@ -10,5 +10,6 @@ class Binary extends Model
         'sponsor',
         'user',
         'position',
+        'invest',
     ];
 }

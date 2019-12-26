@@ -15,11 +15,12 @@ class CreateInvestmentsTable extends Migration
     {
         Schema::create('investments', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('reinvest');
-            $table->integer('join');
-            $table->integer('package');
-            $table->integer('profit');
-            $table->integer('status');
+            $table->integer('user');
+            $table->integer('reinvest')->default(0);
+            $table->integer('join')->default(0);
+            $table->integer('package')->default(0);
+            $table->integer('profit')->default(0);
+            $table->integer('status')->default(0);
             $table->timestamps();
         });
     }

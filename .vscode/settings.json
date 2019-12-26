@@ -3,6 +3,9 @@
     "Laravel",
     "csrf",
     "enderror",
+    "endfor",
+    "endforeach",
+    "endphp",
     "vocer"
   ]
 }

@@ -16,10 +16,11 @@ class CreateBonusesTable extends Migration
         Schema::create('bonuses', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('user');
-            $table->integer('investment_id');
+            $table->integer('invest_id');
             $table->text('description');
-            $table->text('debit');
-            $table->text('credit');
+            $table->integer('debit')->default(0);
+            $table->integer('credit')->default(0);
+            $table->integer('status')->default(0);
             $table->timestamps();
         });
     }

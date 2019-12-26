@@ -16,10 +16,11 @@ class CreateVocerPointsTable extends Migration
         Schema::create('vocer_points', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('user');
-            $table->integer('investment_id');
+            $table->integer('bonus_id');
             $table->text('description');
-            $table->text('debit');
-            $table->text('credit');
+            $table->integer('debit')->default(0);
+            $table->integer('credit')->default(0);
+            $table->integer('status')->default(0);
             $table->timestamps();
         });
     }

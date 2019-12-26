@@ -18,6 +18,7 @@ class CreateBinariesTable extends Migration
             $table->integer('sponsor')->nullable();
             $table->integer('user')->nullable();
             $table->integer('position')->default(0);
+            $table->boolean('invest')->default(0);
             $table->timestamps();
         });
     }

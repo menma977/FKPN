@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Model\Ticket;
+use App\User;
 use Illuminate\Http\Request;
 
 class TicketController extends Controller
@@ -14,7 +15,15 @@ class TicketController extends Controller
      */
     public function index()
     {
-        //
+        $ticket = Ticket::orderBy('created_at', 'desc')->get();
+        $ticket->map(function ($item) {
+            $item->user = User::find($item->user);
+        });
+
+        $data = [
+            'ticket' => $ticket,
+        ];
+        return view('ticket.index', $data);
     }
 
     /**
@@ -24,7 +33,12 @@ class TicketController extends Controller
      */
     public function create()
     {
-        //
+        $users = User::where('rule', 1)->get();
+        $users = User::all();
+        $data = [
+            'users' => $users,
+        ];
+        return view('ticket.create', $data);
     }
 
     /**
@@ -35,18 +49,18 @@ class TicketController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        $this->validate($request, [
+            'username' => 'required|exists:users,id',
+            'ticket' => 'required|numeric|min:1',
+        ]);
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Model\Ticket  $ticket
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Ticket $ticket)
-    {
-        //
+        $ticket = new Ticket();
+        $ticket->description = "Admin menabah tiket ke pada akun anda sejumlah: " . $request->ticket;
+        $ticket->user = $request->username;
+        $ticket->credit = $request->ticket;
+        $ticket->save();
+
+        return redirect()->route('ticket.index');
     }
 
     /**
@@ -55,9 +69,14 @@ class TicketController extends Controller
      * @param  \App\Model\Ticket  $ticket
      * @return \Illuminate\Http\Response
      */
-    public function edit(Ticket $ticket)
+    public function edit($ticketID)
     {
-        //
+        $ticket = Ticket::find($ticketID);
+        $ticket->user = User::find($ticket->user);
+        $data = [
+            'ticket' => $ticket,
+        ];
+        return view('ticket.edit', $data);
     }
 
     /**
@@ -67,9 +86,18 @@ class TicketController extends Controller
      * @param  \App\Model\Ticket  $ticket
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Ticket $ticket)
+    public function update(Request $request, $ticketID)
     {
-        //
+        $this->validate($request, [
+            'ticket' => 'required|numeric|min:1',
+        ]);
+
+        $ticket = Ticket::find($ticketID);
+        $ticket->description = "Admin Mengubah tiket ke pada akun anda sejumlah: " . $request->ticket;
+        $ticket->credit = $request->ticket;
+        $ticket->save();
+
+        return redirect()->route('ticket.index');
     }
 
     /**
@@ -78,8 +106,10 @@ class TicketController extends Controller
      * @param  \App\Model\Ticket  $ticket
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Ticket $ticket)
+    public function destroy($ticketID)
     {
-        //
+        Ticket::destroy($ticketID);
+
+        return redirect()->route('ticket.index');
     }
 }

@@ -8,9 +8,9 @@ class Ticket extends Model
 {
     protected $fillable = [
         'user',
-        'investment_id',
         'description',
         'debit',
         'credit',
+        'type',
     ];
 }

@@ -16,10 +16,10 @@ class CreateTicketsTable extends Migration
         Schema::create('tickets', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('user');
-            $table->integer('investment_id');
             $table->text('description');
-            $table->text('debit');
-            $table->text('credit');
+            $table->integer('debit')->default(0);
+            $table->integer('credit')->default(0);
+            $table->integer('type')->default(0);
             $table->timestamps();
         });
     }
