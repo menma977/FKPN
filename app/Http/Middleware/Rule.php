@@ -17,7 +17,9 @@ class Rule
     public function handle($request, Closure $next)
     {
         if(Auth::user()->rule != 0) {
-            return abort(404);
+            Auth::logout();
+            return redirect()->back();
+            // return abort(404);
         }
 
         return $next($request);

@@ -28,7 +28,6 @@ class UserController extends Controller
 
     public function register(Request $request)
     {
-
         //ToDo:add image| in: ktp_img, ktp_img_user, image
         $this->validate($request, [
             'sponsor' => 'exists:users,username',
@@ -78,7 +77,7 @@ class UserController extends Controller
         $sponsorID = $getSponsor->id;
         $data = null;
         while (true) {
-            $binary = Binary::where('sponsor', $sponsorID)->where('position', $request->position)->first();
+            $binary = Binary::where('up_line', $sponsorID)->where('position', $request->position)->first();
             if ($binary) {
                 $sponsorID = $binary->user;
             } else {
@@ -87,14 +86,15 @@ class UserController extends Controller
         }
 
         $binary = new Binary();
-        $binary->sponsor = $sponsorID;
+        $binary->sponsor = $getSponsor->id;
+        $binary->up_line = $sponsorID;
         $binary->user = $user->id;
         $binary->position = $request->position;
         $binary->save();
 
         $ticket = new Ticket();
         $ticket->description = '1 Tiket telah di pakai oleh: ' . $user->username;
-        $ticket->user = $sponsorID;
+        $ticket->user = $getSponsor->id;
         $ticket->debit = 1;
         $ticket->type = 1;
         $ticket->save();

@@ -26,7 +26,8 @@ Route::get('/', function () {
 // Auth::routes();
 Auth::routes(['register' => false, 'reset' => false, 'verify' => false]);
 
-Route::get('/home', 'HomeController@index')->name('home')->middleware(['rule', 'auth']);
+Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/package/{id}', 'HomeController@package')->name('package');
 
 Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
     Route::get('/', 'UserController@index')->name('index')->middleware(['rule', 'auth']);
@@ -45,6 +46,11 @@ Route::group(['prefix' => 'ticket', 'as' => 'ticket.'], function () {
     Route::get('/edit/{ticketID}', 'TicketController@edit')->name('edit')->middleware(['rule', 'auth']);
     Route::post('/update/{id}', 'TicketController@update')->name('update')->middleware(['rule', 'auth']);
     Route::get('/delete/{id}', 'TicketController@destroy')->name('delete')->middleware(['rule', 'auth']);
+});
+
+Route::group(['prefix' => 'Investment', 'as' => 'Investment.'], function () {
+    Route::get('/', 'InvestmentController@index')->name('index')->middleware(['rule', 'auth']);
+    Route::get('/update/{id}/{status}', 'InvestmentController@update')->name('update')->middleware(['rule', 'auth']);
 });
 
 Route::group(['prefix' => 'x', 'as' => 'x.'], function () {

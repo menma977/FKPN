@@ -16,7 +16,7 @@ class CreateInvestmentsTable extends Migration
         Schema::create('investments', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('user');
-            $table->integer('reinvest')->default(0);
+            $table->integer('reinvest')->default(1);
             $table->integer('join')->default(0);
             $table->integer('package')->default(0);
             $table->integer('profit')->default(0);

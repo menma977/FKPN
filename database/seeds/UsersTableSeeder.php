@@ -32,31 +32,12 @@ class UsersTableSeeder extends Seeder
             'status' => 1,
         ]);
 
-        DB::table('users')->insert([
-            'name' => 'member',
-            'username' => 'member',
-            'email' => 'member@gmail.com',
-            'password' => bcrypt('member'),
-            'rule' => '1',
-            'ktp_img' => '',
-            'ktp_img_user' => '',
-            'ktp_number' => '1',
-            'phone' => '1',
-            'image' => '',
-            'province' => '',
-            'district' => '',
-            'sub_district' => '',
-            'village' => '',
-            'number_address' => 0,
-            'description_address' => '',
-            'status' => 1,
-        ]);
-
         DB::table('binaries')->insert([
             'sponsor' => '1',
-            'user' => '2',
-            'position' => 0,
-            'invest' => 1
+            'up_line' => '1',
+            'user' => '1',
+            'position' => '3',
+            'invest' => '1',
         ]);
 
         DB::table('investments')->insert([
@@ -65,14 +46,7 @@ class UsersTableSeeder extends Seeder
             'join' => '500000',
             'package' => '1500000',
             'profit' => '0',
-        ]);
-
-        DB::table('investments')->insert([
-            'user' => '2',
-            'reinvest' => '1',
-            'join' => '500000',
-            'package' => '1500000',
-            'profit' => '0',
+            'status' => '2',
         ]);
 
         DB::table('bonuses')->insert([
@@ -86,9 +60,9 @@ class UsersTableSeeder extends Seeder
         DB::table('vocer_points')->insert([
             'user' => '1',
             'bonus_id' => '1',
-            'description' => 'Bonus Sponsor',
-            'debit' => '75000',
-            'credit' => '0',
+            'description' => 'Reinvest Limit',
+            'debit' => '0',
+            'credit' => '1500000',
         ]);
     }
 }

@@ -16,6 +16,7 @@ class CreateBinariesTable extends Migration
         Schema::create('binaries', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('sponsor')->nullable();
+            $table->integer('up_line')->nullable();
             $table->integer('user')->nullable();
             $table->integer('position')->default(0);
             $table->boolean('invest')->default(0);

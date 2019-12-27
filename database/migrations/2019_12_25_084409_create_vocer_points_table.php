@@ -16,7 +16,7 @@ class CreateVocerPointsTable extends Migration
         Schema::create('vocer_points', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('user');
-            $table->integer('bonus_id');
+            $table->integer('bonus_id')->nullable();
             $table->text('description');
             $table->integer('debit')->default(0);
             $table->integer('credit')->default(0);
