@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Binary;
 use App\Http\Controllers\Controller;
+use App\Model\Bonus;
+use App\Model\Investment;
 use App\Model\Ticket;
+use App\Model\VocerPoint;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,7 +23,7 @@ class UserController extends Controller
         if (Auth::attempt(['username' => request('username'), 'password' => request('password')])) {
             $user = Auth::user();
             $user->token = $user->createToken('nApp')->accessToken;
-            return response()->json(['response' => $user], 200);
+            return response()->json(['response' => $user->token], 200);
         } else {
             return response()->json(['response' => 'Username atau Password Salah'], 422);
         }
@@ -36,11 +39,8 @@ class UserController extends Controller
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
             'c_password' => 'required|same:password',
-            'ktp_img' => 'required|max:2048',
-            'ktp_img_user' => 'required|max:2048',
             'ktp_number' => 'required|unique:users|numeric',
             'phone' => 'required|unique:users|numeric|digits_between:10,15',
-            'image' => 'required|max:2048',
             'province' => 'required|string',
             'district' => 'required|string',
             'sub_district' => 'required|string',
@@ -52,7 +52,13 @@ class UserController extends Controller
         $creditTicket = Ticket::where('user', User::where('username', $request->sponsor)->first()->id)->sum('credit');
         $debitTicket = Ticket::where('user', User::where('username', $request->sponsor)->first()->id)->sum('debit');
         if (($creditTicket - $debitTicket) <= 0) {
-            return response()->json(['message' => 'The given data was invalid.', 'error' => ['ticket' => 'seponsor tidak memiliki tiket tersisa']], 422);
+            $data = [
+                'message' => 'The given data was invalid.',
+                'error' => [
+                    'ticket' => 'seponsor tidak memiliki tiket tersisa',
+                ],
+            ];
+            return response()->json($data, 422);
         }
 
         $user = new User();
@@ -101,11 +107,37 @@ class UserController extends Controller
 
         $user->token = $user->createToken('nApp')->accessToken;
 
-        return response()->json(['response' => $user], 200);
+        return response()->json(['response' => $user->token], 200);
     }
 
     public function show()
     {
         return response()->json(['response' => Auth::user()], 200);
+    }
+
+    public function invest()
+    {
+        $user = User::all();
+        $user->map(function ($item) {
+            $getJoinUser = Investment::where('user', $item->id)->orderBy('id', 'desc')->first();
+            $vocerPointLimit = VocerPoint::where('user', $item->id)->sum('credit') - VocerPoint::where('user', $item->id)->sum('debit');
+            if ($vocerPointLimit > 0) {
+                $bonus = new Bonus();
+                $bonus->description = "ROI";
+                $bonus->invest_id = $getJoinUser->reinvest;
+                $bonus->user = $item->id;
+                $bonus->credit = $getJoinUser->join * 0.01;
+                $bonus->status = 2;
+                $bonus->save();
+
+                $vocerPoint = new VocerPoint();
+                $vocerPoint->description = "ROI";
+                $vocerPoint->bonus_id = $getJoinUser->reinvest;
+                $vocerPoint->user = $item->id;
+                $vocerPoint->debit = $getJoinUser->join * 0.01;
+                $vocerPoint->status = 2;
+                $vocerPoint->save();
+            }
+        });
     }
 }

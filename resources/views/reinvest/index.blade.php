@@ -35,13 +35,13 @@
                                     </div>
                                     @else
                                     <div class="col-md-6">
-                                        <a href="{{ route('Investment.update', [$item->id, 1]) }}"
+                                        <a href="{{ route('investment.update', [$item->id, 1]) }}"
                                             class="btn btn-block btn-success">
                                             Trima
                                         </a>
                                     </div>
                                     <div class="col-md-6">
-                                        <a href="{{ route('Investment.update', [$item->id, 2]) }}"
+                                        <a href="{{ route('investment.update', [$item->id, 2]) }}"
                                             class="btn btn-block btn-danger">
                                             Batalkan
                                         </a>

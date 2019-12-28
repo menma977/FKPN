@@ -48,17 +48,13 @@ Route::group(['prefix' => 'ticket', 'as' => 'ticket.'], function () {
     Route::get('/delete/{id}', 'TicketController@destroy')->name('delete')->middleware(['rule', 'auth']);
 });
 
-Route::group(['prefix' => 'Investment', 'as' => 'Investment.'], function () {
+Route::group(['prefix' => 'investment', 'as' => 'investment.'], function () {
     Route::get('/', 'InvestmentController@index')->name('index')->middleware(['rule', 'auth']);
     Route::get('/update/{id}/{status}', 'InvestmentController@update')->name('update')->middleware(['rule', 'auth']);
 });
 
-Route::group(['prefix' => 'x', 'as' => 'x.'], function () {
-    Route::get('/', 'xController@index')->name('index')->middleware(['rule', 'auth']);
-    Route::get('/create', 'xController@create')->name('create')->middleware(['rule', 'auth']);
-    Route::post('/store', 'xController@store')->name('store')->middleware(['rule', 'auth']);
-    Route::get('/show', 'xController@show')->name('show')->middleware(['rule', 'auth']);
-    Route::get('/edit/{id}', 'xController@edit')->name('edit')->middleware(['rule', 'auth']);
-    Route::post('/update/{id}', 'xController@update')->name('update')->middleware(['rule', 'auth']);
-    Route::get('/delete/{id}', 'xController@destroy')->name('delete')->middleware(['rule', 'auth']);
+Route::group(['prefix' => 'withdraw', 'as' => 'withdraw.'], function () {
+    Route::get('/', 'WithdrawController@index')->name('index')->middleware(['rule', 'auth']);
+    Route::get('/update/{id}', 'WithdrawController@update')->name('update')->middleware(['rule', 'auth']);
+    Route::get('/delete/{id}', 'WithdrawController@destroy')->name('delete')->middleware(['rule', 'auth']);
 });

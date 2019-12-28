@@ -6,6 +6,8 @@
     "endfor",
     "endforeach",
     "endphp",
+    "tbody",
+    "thead",
     "vocer"
   ]
 }

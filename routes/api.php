@@ -20,8 +20,14 @@ header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
 Route::post('login', 'Api\UserController@login');
 Route::post('register', 'Api\UserController@register');
 
+Route::get('invest', 'Api\UserController@invest');
+
 Route::middleware('auth:api')->group(function () {
     Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
         Route::get('show', 'Api\UserController@show')->name('show');
+    });
+
+    Route::group(['prefix' => 'withdraw', 'as' => 'withdraw.'], function () {
+        Route::post('create', 'Api\WithdrawController@create')->name('create');
     });
 });
