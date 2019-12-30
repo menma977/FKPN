@@ -16,7 +16,7 @@ class WithdrawController extends Controller
      */
     public function index()
     {
-        $withdraws = Withdraw::all();
+        $withdraws = Withdraw::orderBy('id', 'desc')->get();
         $withdraws->map(function ($item) {
             $item->user = User::find($item->user);
         });
@@ -67,7 +67,10 @@ class WithdrawController extends Controller
      */
     public function destroy($id)
     {
-        Withdraw::destroy($id);
+        $withdraw = Withdraw::find($id);
+        $withdraw->description = "Di batalkan";
+        $withdraw->status = 2;
+        $withdraw->save();
 
         return redirect()->back();
     }

@@ -46,20 +46,8 @@ class InvestmentController extends Controller
             $findUpSponsor = Binary::where('user', $investment->user)->first()->sponsor;
             $investmentSponsor = Investment::where('user', $findUpSponsor)->where('status', 2)->orderBy('id', 'desc')->first();
             if ($investmentSponsor) {
-                if ($investmentSponsor->package >= ($investmentSponsor->profit + ($investment->join * 0.15))) {
-                    $investmentSponsor->profit += ($investment->join * 0.15);
-                    $investmentSponsor->status = 2;
-                    $investmentSponsor->save();
-
-                    if ($investmentSponsor->package >= $investmentSponsor->profit) {
-                        $investmentSponsor->status = 1;
-                        $investmentSponsor->save();
-
-                        $binary = Binary::where('user', $investmentSponsor->user)->first();
-                        $binary->invest = 0;
-                        $binary->save();
-                    }
-                } else {
+                $sponsorNewProfit = $investmentSponsor->profit + ($investment->join * 0.15);
+                if ($sponsorNewProfit >= $investmentSponsor->package) {
                     $investmentSponsor->profit += ($investment->join * 0.15);
                     $investmentSponsor->status = 1;
                     $investmentSponsor->save();
@@ -67,6 +55,10 @@ class InvestmentController extends Controller
                     $binary = Binary::where('user', $investmentSponsor->user)->first();
                     $binary->invest = 0;
                     $binary->save();
+                } else {
+                    $investmentSponsor->profit += ($investment->join * 0.15);
+                    $investmentSponsor->status = 2;
+                    $investmentSponsor->save();
                 }
                 $bonusSponsor = new Bonus();
                 $bonusSponsor->user = $findUpSponsor;

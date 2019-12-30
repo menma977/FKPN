@@ -20,14 +20,21 @@ header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
 Route::post('login', 'Api\UserController@login');
 Route::post('register', 'Api\UserController@register');
 
-Route::get('invest', 'Api\UserController@invest');
+Route::group(['prefix' => 'cron', 'as' => 'cron.'], function () {
+    Route::get('run', 'Api\CronJobController@run')->name('run');
+});
 
 Route::middleware('auth:api')->group(function () {
     Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
         Route::get('show', 'Api\UserController@show')->name('show');
+        Route::get('balance', 'Api\UserController@balance')->name('balance');
     });
 
     Route::group(['prefix' => 'withdraw', 'as' => 'withdraw.'], function () {
-        Route::post('create', 'Api\WithdrawController@create')->name('create');
+        Route::post('store', 'Api\WithdrawController@store')->name('store');
+    });
+
+    Route::group(['prefix' => 'binary', 'as' => 'binary.'], function () {
+        Route::get('', 'Api\BinaryController@index')->name('index');
     });
 });

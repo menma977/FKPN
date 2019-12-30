@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 
 class WithdrawController extends Controller
 {
-    public function create(Request $request)
+    public function store(Request $request)
     {
         $withdrawUserCount = Withdraw::where('user', Auth::user()->id)->where('status', 0)->sum('total');
         $maxWD = Investment::where('user', Auth::user()->id)->orderBy('id', 'desc')->sum('package');
@@ -26,7 +26,7 @@ class WithdrawController extends Controller
                 'message' => 'The given data was invalid.',
                 'error' => [
                     'nominal' => [
-                        'nominal withdraw melebihi maxsimum bonus anda (' . $sumBonusUser . ')',
+                        'nominal withdraw melebihi maxsimum bonus anda (Rp ' . number_format($sumBonusUser, 0, ',', '.') . ')',
                     ],
                 ],
             ];

@@ -31,7 +31,6 @@ class UserController extends Controller
 
     public function register(Request $request)
     {
-        //ToDo:add image| in: ktp_img, ktp_img_user, image
         $this->validate($request, [
             'sponsor' => 'exists:users,username',
             'name' => 'required',
@@ -115,29 +114,19 @@ class UserController extends Controller
         return response()->json(['response' => Auth::user()], 200);
     }
 
-    public function invest()
+    public function balance()
     {
-        $user = User::all();
-        $user->map(function ($item) {
-            $getJoinUser = Investment::where('user', $item->id)->orderBy('id', 'desc')->first();
-            $vocerPointLimit = VocerPoint::where('user', $item->id)->sum('credit') - VocerPoint::where('user', $item->id)->sum('debit');
-            if ($vocerPointLimit > 0) {
-                $bonus = new Bonus();
-                $bonus->description = "ROI";
-                $bonus->invest_id = $getJoinUser->reinvest;
-                $bonus->user = $item->id;
-                $bonus->credit = $getJoinUser->join * 0.01;
-                $bonus->status = 2;
-                $bonus->save();
+        $bonus = Bonus::where('user', Auth::user()->id)->sum('credit') - Bonus::where('user', Auth::user()->id)->sum('debit');
+        $vocerPoint = VocerPoint::where('user', Auth::user()->id)->sum('credit') - VocerPoint::where('user', Auth::user()->id)->sum('debit');
+        $ticket = Ticket::where('user', Auth::user()->id)->sum('credit') - Ticket::where('user', Auth::user()->id)->sum('debit');
+        $countInvestment = Investment::where('user', Auth::user()->id)->sum('package') - Investment::where('user', Auth::user()->id)->sum('profit');
 
-                $vocerPoint = new VocerPoint();
-                $vocerPoint->description = "ROI";
-                $vocerPoint->bonus_id = $getJoinUser->reinvest;
-                $vocerPoint->user = $item->id;
-                $vocerPoint->debit = $getJoinUser->join * 0.01;
-                $vocerPoint->status = 2;
-                $vocerPoint->save();
-            }
-        });
+        $data = [
+            'bonus' => 'Rp ' . number_format($bonus, 0, ',', '.'),
+            'vocerPoint' => 'Rp ' . number_format($vocerPoint, 0, ',', '.'),
+            'ticket' => $ticket,
+            'countInvestment' => 'Rp ' . number_format($countInvestment, 0, ',', '.'),
+        ];
+        return response()->json($data, 200);
     }
 }

@@ -13,7 +13,7 @@
                             <th class="text-center">username</th>
                             <th class="text-center">Package ke </th>
                             <th class="text-center">total Withdraw</th>
-                            <th class="text-center">status</th>
+                            <th class="text-center" style="width: 170px">status</th>
                             <th class="text-center">action</th>
                         </thead>
                         <tbody>
@@ -28,8 +28,11 @@
                                 <td class="text-center">
                                     Rp {{ number_format($item->total,0,',','.') }}
                                 </td>
-                                <td class="text-center {{ $item->status == 0 ? 'text-danger' : "text-success" }}">
-                                    {{ $item->status == 0 ? "Belum Di Approve" : "Sudah Di Approve" }}
+                                <td class="text-center">
+                                    <div
+                                        class="btn btn-block {{ $item->status == 0 ? 'btn-danger' : ($item->status == 1 ? "btn-success" : "btn-warning") }}">
+                                        {{ $item->status == 0 ? "Belum Di Approve" : ($item->status == 1 ? "Sudah Di Approve" : "Di batalkan") }}
+                                    </div>
                                 </td>
                                 <td class="text-center">
                                     @if ($item->status == 1)
