@@ -24,7 +24,7 @@ class WithdrawController extends Controller
         if ($request->nominal > $sumBonusUser) {
             $data = [
                 'message' => 'The given data was invalid.',
-                'error' => [
+                'errors' => [
                     'nominal' => [
                         'nominal withdraw melebihi maxsimum bonus anda (Rp ' . number_format($sumBonusUser, 0, ',', '.') . ')',
                     ],

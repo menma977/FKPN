@@ -39,4 +39,8 @@ Route::middleware('auth:api')->group(function () {
     Route::group(['prefix' => 'binary', 'as' => 'binary.'], function () {
         Route::get('', 'Api\BinaryController@index')->name('index');
     });
+
+    Route::group(['prefix' => 'invest', 'as' => 'invest.'], function () {
+        Route::get('', 'Api\InvestmentController@index')->name('index');
+    });
 });
