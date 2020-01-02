@@ -25,6 +25,8 @@ Route::group(['prefix' => 'cron', 'as' => 'cron.'], function () {
 });
 
 Route::middleware('auth:api')->group(function () {
+    Route::get('verification', 'Api\UserController@verification');
+
     Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
         Route::get('show', 'Api\UserController@show')->name('show');
         Route::get('balance', 'Api\UserController@balance')->name('balance');

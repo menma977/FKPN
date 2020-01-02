@@ -14,6 +14,11 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
+    public function verification()
+    {
+        return response()->json(['response' => Auth::check()], 200);
+    }
+
     public function login(Request $request)
     {
         $this->validate($request, [
@@ -25,15 +30,21 @@ class UserController extends Controller
             $user->token = $user->createToken('nApp')->accessToken;
             return response()->json(['response' => $user->token], 200);
         } else {
-            return response()->json(['response' => 'Username atau Password Salah'], 422);
+            $data = [
+                'message' => 'The given data was invalid.',
+                'errors' => [
+                    'validation' => ['username atau password tidak valid.'],
+                ],
+            ];
+            return response()->json($data, 422);
         }
     }
 
     public function register(Request $request)
     {
         $this->validate($request, [
-            'sponsor' => 'exists:users,username',
-            'name' => 'required',
+            'sponsor' => 'required|string|exists:users,username',
+            'name' => 'required|string',
             'username' => 'required|string|min:6|unique:users',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
@@ -76,6 +87,7 @@ class UserController extends Controller
         $user->village = $request->village;
         $user->number_address = $request->number_address;
         $user->description_address = $request->description_address;
+        $user->status = 2;
         $user->save();
 
         $getSponsor = User::where('username', $request->sponsor)->first();
