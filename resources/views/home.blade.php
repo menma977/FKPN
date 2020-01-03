@@ -30,7 +30,6 @@
     </div>
     <br>
 
-    @if (Auth::user()->rule == 1)
     @if ($statusBinary == 2)
     <div class="row justify-content-center">
         <div class="col-md-12">
@@ -62,7 +61,6 @@
         </div>
     </div>
     <hr>
-    @endif
     @endif
 
     <div class="row justify-content-center">

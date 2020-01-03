@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Binary;
 use App\Http\Controllers\Controller;
 use App\Model\Bonus;
+use App\Model\Deposit;
 use App\Model\Investment;
 use App\Model\Ticket;
 use App\Model\VocerPoint;
@@ -132,12 +133,14 @@ class UserController extends Controller
         $vocerPoint = VocerPoint::where('user', Auth::user()->id)->sum('credit') - VocerPoint::where('user', Auth::user()->id)->sum('debit');
         $ticket = Ticket::where('user', Auth::user()->id)->sum('credit') - Ticket::where('user', Auth::user()->id)->sum('debit');
         $countInvestment = Investment::where('user', Auth::user()->id)->sum('package') - Investment::where('user', Auth::user()->id)->sum('profit');
+        $deposit = Deposit::where('user', Auth::user()->id)->where('status', '!=', 0)->sum('credit') - Deposit::where('user', Auth::user()->id)->where('status', '!=', 0)->sum('debit');
 
         $data = [
             'bonus' => 'Rp ' . number_format($bonus, 0, ',', '.'),
             'vocerPoint' => 'Rp ' . number_format($vocerPoint, 0, ',', '.'),
             'ticket' => $ticket,
             'countInvestment' => 'Rp ' . number_format($countInvestment, 0, ',', '.'),
+            'deposit' => 'Rp ' . number_format($deposit, 0, ',', '.'),
         ];
         return response()->json($data, 200);
     }

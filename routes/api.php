@@ -32,6 +32,11 @@ Route::middleware('auth:api')->group(function () {
         Route::get('balance', 'Api\UserController@balance')->name('balance');
     });
 
+    Route::group(['prefix' => 'deposit', 'as' => 'deposit.'], function () {
+        Route::get('', 'Api\DepositController@index')->name('index');
+        Route::post('create', 'Api\DepositController@create')->name('create');
+    });
+
     Route::group(['prefix' => 'withdraw', 'as' => 'withdraw.'], function () {
         Route::post('store', 'Api\WithdrawController@store')->name('store');
     });
@@ -42,5 +47,6 @@ Route::middleware('auth:api')->group(function () {
 
     Route::group(['prefix' => 'invest', 'as' => 'invest.'], function () {
         Route::get('', 'Api\InvestmentController@index')->name('index');
+        Route::get('/create/{id}', 'Api\InvestmentController@create')->name('create');
     });
 });

@@ -39,6 +39,12 @@ Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
     Route::get('/delete/{id}', 'UserController@destroy')->name('delete')->middleware(['rule', 'auth']);
 });
 
+Route::group(['prefix' => 'deposit', 'as' => 'deposit.'], function () {
+    Route::get('/', 'DepositController@index')->name('index')->middleware(['rule', 'auth']);
+    Route::get('/update/{id}', 'DepositController@update')->name('update')->middleware(['rule', 'auth']);
+    Route::get('/delete/{id}', 'DepositController@destroy')->name('delete')->middleware(['rule', 'auth']);
+});
+
 Route::group(['prefix' => 'ticket', 'as' => 'ticket.'], function () {
     Route::get('/', 'TicketController@index')->name('index')->middleware(['rule', 'auth']);
     Route::get('/create', 'TicketController@create')->name('create')->middleware(['rule', 'auth']);
@@ -50,11 +56,14 @@ Route::group(['prefix' => 'ticket', 'as' => 'ticket.'], function () {
 
 Route::group(['prefix' => 'investment', 'as' => 'investment.'], function () {
     Route::get('/', 'InvestmentController@index')->name('index')->middleware(['rule', 'auth']);
-    Route::get('/update/{id}/{status}', 'InvestmentController@update')->name('update')->middleware(['rule', 'auth']);
 });
 
 Route::group(['prefix' => 'withdraw', 'as' => 'withdraw.'], function () {
     Route::get('/', 'WithdrawController@index')->name('index')->middleware(['rule', 'auth']);
     Route::get('/update/{id}', 'WithdrawController@update')->name('update')->middleware(['rule', 'auth']);
     Route::get('/delete/{id}', 'WithdrawController@destroy')->name('delete')->middleware(['rule', 'auth']);
+});
+
+Route::group(['prefix' => 'email', 'as' => 'email.'], function () {
+    Route::get('/invest', 'WithdrawController@index')->name('index');
 });

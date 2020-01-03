@@ -9,6 +9,7 @@ use App\Model\Ticket;
 use App\Model\VocerPoint;
 use App\User;
 use Auth;
+use Mail;
 
 class HomeController extends Controller
 {
@@ -81,6 +82,7 @@ class HomeController extends Controller
 
     public function package($id)
     {
+
         if ($id == 1) {
             $package = 500000;
         } else if ($id == 2) {
@@ -107,6 +109,16 @@ class HomeController extends Controller
         $binary = Binary::where('user', Auth::user()->id)->first();
         $binary->invest = 1;
         $binary->save();
+
+        $data = [
+            'user' => Auth::user(),
+            'package' => $package + rand(99, 999),
+        ];
+
+        Mail::send('mail.invest', $data, function ($message) {
+            $message->to(Auth::user()->email, 'Selesaikan Transaksi')->subject('Selesaikan Transaksi pembayaran');
+            $message->from('admin@fkpn.com', 'FKPN');
+        });
 
         return redirect()->back();
     }
