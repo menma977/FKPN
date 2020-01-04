@@ -14,6 +14,11 @@ class InvestmentController extends Controller
     {
         $lastInvest = Investment::where('user', Auth::user()->id)->orderBy('id', 'desc')->first();
         $investList = Investment::where('user', Auth::user()->id)->take(100)->get();
+        $investList->map(function ($item) {
+            $item->join = "Rp " . number_format($item->join, 0, ',', '.');
+            $item->package = "Rp " . number_format($item->package, 0, ',', '.');
+            return $item;
+        });
 
         $data = [
             'lastInvest' => $lastInvest,

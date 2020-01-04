@@ -62,4 +62,24 @@ class DepositController extends Controller
             return response()->json($data, 422);
         }
     }
+
+    public function show()
+    {
+        $deposit = Deposit::where('user', Auth::user()->id)->where('status', 0)->orderBy('id', 'desc')->first();
+        if ($deposit) {
+            $data = [
+                'userName' => Auth::user()->name,
+                'package' => 'Rp ' . number_format($deposit->credit, 0, ',', '.'),
+                'name' => 'aww',
+                'bank' => 'aww',
+                'accountNumber' => '00000',
+            ];
+            return response()->json($data, 200);
+        } else {
+            $data = [
+                'message' => 'Tidak ada tagihan'
+            ];
+            return response()->json($data, 201);
+        }
+    }
 }

@@ -35,6 +35,7 @@ Route::middleware('auth:api')->group(function () {
     Route::group(['prefix' => 'deposit', 'as' => 'deposit.'], function () {
         Route::get('', 'Api\DepositController@index')->name('index');
         Route::post('create', 'Api\DepositController@create')->name('create');
+        Route::get('show', 'Api\DepositController@show')->name('show');
     });
 
     Route::group(['prefix' => 'withdraw', 'as' => 'withdraw.'], function () {

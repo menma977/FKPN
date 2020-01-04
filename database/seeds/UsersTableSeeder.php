@@ -17,6 +17,7 @@ class UsersTableSeeder extends Seeder
             'username' => 'admin',
             'email' => 'admin@gmail.com',
             'password' => bcrypt('admin'),
+            'password_x' => bcrypt('adminadmin'),
             'rule' => '0',
             'ktp_img' => '',
             'ktp_img_user' => '',
@@ -29,6 +30,7 @@ class UsersTableSeeder extends Seeder
             'village' => '',
             'number_address' => 0,
             'description_address' => '',
+            'premium' => 1,
             'status' => 1,
         ]);
 

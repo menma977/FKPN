@@ -2,7 +2,6 @@
 
 namespace App;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
@@ -20,7 +19,6 @@ class User extends Authenticatable
         'name',
         'username',
         'email',
-        'password',
         'ktp_img',
         'ktp_img_user',
         'ktp_number',
@@ -32,6 +30,7 @@ class User extends Authenticatable
         'village',
         'number_address',
         'description_address',
+        'premium',
     ];
 
     /**
@@ -40,7 +39,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token', 'id', 'rule', 'status'
+        'password_x', 'password', 'remember_token', 'id', 'rule', 'status',
     ];
 
     /**

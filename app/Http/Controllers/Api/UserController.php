@@ -50,6 +50,8 @@ class UserController extends Controller
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
             'c_password' => 'required|same:password',
+            'password_x' => 'required|min:6',
+            'c_password_x' => 'required|same:password_x',
             'ktp_number' => 'required|unique:users|numeric',
             'phone' => 'required|unique:users|numeric|digits_between:10,15',
             'province' => 'required|string',
@@ -77,6 +79,7 @@ class UserController extends Controller
         $user->username = $request->username;
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
+        $user->password_x = bcrypt($request->password_x);
         $user->ktp_img = $request->ktp_img;
         $user->ktp_img_user = $request->ktp_img_user;
         $user->ktp_number = $request->ktp_number;
