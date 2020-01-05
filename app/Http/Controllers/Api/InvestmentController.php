@@ -6,6 +6,7 @@ use App\Binary;
 use App\Http\Controllers\Controller;
 use App\Model\Deposit;
 use App\Model\Investment;
+use App\Model\VocerPoint;
 use Illuminate\Support\Facades\Auth;
 
 class InvestmentController extends Controller
@@ -40,7 +41,7 @@ class InvestmentController extends Controller
             $package = 10000000;
         }
 
-        $balanceDeposit = Deposit::where('user', Auth::user()->id)->sum('credit') - Deposit::where('user', Auth::user()->id)->sum('debit');
+        $balanceDeposit = Deposit::where('user', Auth::user()->id)->where('status', 1)->sum('credit') - Deposit::where('user', Auth::user()->id)->where('status', 1)->sum('debit');
         if ($balanceDeposit < $package) {
             $data = [
                 'message' => 'The given data was invalid.',
@@ -75,6 +76,16 @@ class InvestmentController extends Controller
             $binary = Binary::where('user', Auth::user()->id)->first();
             $binary->invest = 0;
             $binary->save();
+
+            VocerPoint::where('user', Auth::user()->id)->delete();
+
+            $vocerPoint = new VocerPoint();
+            $vocerPoint->user = Auth::user()->id;
+            $vocerPoint->bonus_id = $investment->id;
+            $vocerPoint->description = "Reinvest " . number_format($package, 0, ',', '.');
+            $vocerPoint->credit = $package * 3;
+            $vocerPoint->status = 1;
+            $vocerPoint->save();
 
             return response()->json(['response' => 'Reinvest adan akan di proses dalam waktu kurang dari 2 menit setelah transaksi'], 200);
         }

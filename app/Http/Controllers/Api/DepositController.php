@@ -13,6 +13,11 @@ class DepositController extends Controller
     public function index()
     {
         $deposit = Deposit::where('user', Auth::user()->id)->orderBy('id', 'desc')->take(100)->get();
+        if (Auth::user()->rule == 0) {
+            $deposit = Deposit::orderBy('id', 'desc')->take(100)->get();
+        } else {
+            $deposit = Deposit::where('user', Auth::user()->id)->orderBy('id', 'desc')->take(100)->get();
+        }
 
         $data = [
             'deposit' => $deposit,

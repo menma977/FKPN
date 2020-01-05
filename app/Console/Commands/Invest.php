@@ -43,38 +43,42 @@ class Invest extends Command
      */
     public function handle()
     {
-        if (strpos(Carbon::now()->format("l"), "Saturday") === false || strpos(Carbon::now()->format("l"), "Sunday") === false) {
+        if (Carbon::now()->format("l") == "Saturday" || Carbon::now()->format("l") == "Sunday") {
             $profit = 0.01;
             $user = User::all();
             $user->map(function ($item) use ($profit) {
                 if ($item->status == 1) {
                     $getJoinUser = Investment::where('user', $item->id)->orderBy('id', 'desc')->first();
-                    $vocerPointLimit = VocerPoint::where('user', $item->id)->sum('credit') - VocerPoint::where('user', $item->id)->sum('debit');
-                    if ($vocerPointLimit > 0) {
-                        $bonus = new Bonus();
-                        $bonus->description = "ROI";
-                        $bonus->invest_id = $getJoinUser->reinvest;
-                        $bonus->user = $item->id;
-                        $bonus->credit = $getJoinUser->join * $profit;
-                        $bonus->status = 2;
-                        $bonus->save();
+                    $getCreditROI = Bonus::where('user', $item->id)->where('status', 2)->sum('credit');
+                    $maxROI = ($getJoinUser->join * 200) / 100;
+                    if ($getCreditROI <= $maxROI) {
+                        $vocerPointLimit = VocerPoint::where('user', $item->id)->sum('credit') - VocerPoint::where('user', $item->id)->sum('debit');
+                        if ($vocerPointLimit > 0) {
+                            $bonus = new Bonus();
+                            $bonus->description = "ROI";
+                            $bonus->invest_id = $getJoinUser->reinvest;
+                            $bonus->user = $item->id;
+                            $bonus->credit = $getJoinUser->join * $profit;
+                            $bonus->status = 2;
+                            $bonus->save();
 
-                        // $vocerPoint = new VocerPoint();
-                        // $vocerPoint->description = "ROI";
-                        // $vocerPoint->bonus_id = $getJoinUser->reinvest;
-                        // $vocerPoint->user = $item->id;
-                        // $vocerPoint->debit = $getJoinUser->join * $profit;
-                        // $vocerPoint->status = 2;
-                        // $vocerPoint->save();
+                            // $vocerPoint = new VocerPoint();
+                            // $vocerPoint->description = "ROI";
+                            // $vocerPoint->bonus_id = $getJoinUser->reinvest;
+                            // $vocerPoint->user = $item->id;
+                            // $vocerPoint->debit = $getJoinUser->join * $profit;
+                            // $vocerPoint->status = 2;
+                            // $vocerPoint->save();
 
-                        if (($getJoinUser->profit + ($getJoinUser->join * $profit)) >= $getJoinUser->package) {
-                            $getJoinUser->status = 1;
-                            $binary = Binary::where('user', $item->id)->first();
-                            $binary->invest = 0;
-                            $binary->save();
+                            if (($getJoinUser->profit + ($getJoinUser->join * $profit)) >= $getJoinUser->package) {
+                                $getJoinUser->status = 1;
+                                $binary = Binary::where('user', $item->id)->first();
+                                $binary->invest = 0;
+                                $binary->save();
+                            }
+                            $getJoinUser->profit = $getJoinUser->profit + ($getJoinUser->join * $profit);
+                            $getJoinUser->save();
                         }
-                        $getJoinUser->profit = $getJoinUser->profit + ($getJoinUser->join * $profit);
-                        $getJoinUser->save();
                     }
                 }
                 return $item;
