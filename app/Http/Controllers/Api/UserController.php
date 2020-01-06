@@ -10,11 +10,13 @@ use App\Model\Investment;
 use App\Model\Ticket;
 use App\Model\VocerPoint;
 use App\User;
+use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
+
     public function verification()
     {
         return response()->json(['response' => Auth::check()], 200);
@@ -27,8 +29,13 @@ class UserController extends Controller
             'password' => 'required|string',
         ]);
         if (Auth::attempt(['username' => request('username'), 'password' => request('password')])) {
+            $token = Auth::user()->tokens;
+            foreach ($token as $key => $value) {
+                $value->revoke();
+                $value->save();
+            }
             $user = Auth::user();
-            $user->token = $user->createToken('nApp')->accessToken;
+            $user->token = $user->createToken('App')->accessToken;
             return response()->json(['response' => $user->token], 200);
         } else {
             $data = [
@@ -39,6 +46,18 @@ class UserController extends Controller
             ];
             return response()->json($data, 422);
         }
+    }
+
+    public function logout()
+    {
+        $token = Auth::user()->tokens;
+        foreach ($token as $key => $value) {
+            $value->revoke();
+            $value->save();
+        }
+        return response()->json([
+            'response' => 'Successfully logged out',
+        ], 200);
     }
 
     public function register(Request $request)
@@ -67,7 +86,7 @@ class UserController extends Controller
         if (($creditTicket - $debitTicket) <= 0) {
             $data = [
                 'message' => 'The given data was invalid.',
-                'error' => [
+                'errors' => [
                     'ticket' => 'seponsor tidak memiliki tiket tersisa',
                 ],
             ];
@@ -120,7 +139,16 @@ class UserController extends Controller
         $ticket->type = 1;
         $ticket->save();
 
-        $user->token = $user->createToken('nApp')->accessToken;
+        $checkReinvest = Investment::where('user', Auth::user()->id)->orderBy('reinvest', 'desc')->first();
+        $vocerPoint = new VocerPoint();
+        $vocerPoint->user = Auth::user()->id;
+        $vocerPoint->bonus_id = $checkReinvest->id;
+        $vocerPoint->description = "Bonus Afiliasi " . number_format($checkReinvest->package * 0.15, 0, ',', '.');
+        $vocerPoint->debit = $checkReinvest->package * 0.15;
+        $vocerPoint->status = 1;
+        $vocerPoint->save();
+
+        $user->token = $user->createToken('App')->accessToken;
 
         return response()->json(['response' => $user->token], 200);
     }
@@ -128,6 +156,34 @@ class UserController extends Controller
     public function show()
     {
         return response()->json(['response' => Auth::user()], 200);
+    }
+
+    public function update(Request $request)
+    {
+        if (Hash::check($request->password, Auth::user()->password)) {
+            $this->validate($request, [
+                'password' => 'required',
+                'new_password' => 'required|min:6',
+                'new_c_password' => 'required|same:new_password',
+            ]);
+
+            $user = Auth::user();
+            $user->password = bcrypt($request->new_password);
+            $user->save();
+
+            $data = [
+                'response' => 'Password anda saat ini adalah: ' . $request->new_password,
+            ];
+            return response()->json($data, 200);
+        } else {
+            $data = [
+                'message' => 'The given data was invalid.',
+                'errors' => [
+                    'password' => ['Password lama anda tidak cocok'],
+                ],
+            ];
+            return response()->json($data, 422);
+        }
     }
 
     public function balance()

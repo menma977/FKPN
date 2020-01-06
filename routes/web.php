@@ -24,10 +24,10 @@ Route::get('/', function () {
 });
 
 // Auth::routes();
-Auth::routes(['register' => false, 'reset' => false, 'verify' => false]);
+Auth::routes(['register' => false, 'reset' => false]);
 
-Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/package/{id}', 'HomeController@package')->name('package');
+Route::get('/home', 'HomeController@index')->name('home')->middleware(['rule', 'auth']);
+Route::get('/package/{id}', 'HomeController@package')->name('package')->middleware(['rule', 'auth']);
 
 Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
     Route::get('/', 'UserController@index')->name('index')->middleware(['rule', 'auth']);

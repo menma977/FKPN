@@ -13,15 +13,28 @@ class DepositController extends Controller
     public function index()
     {
         $deposit = Deposit::where('user', Auth::user()->id)->orderBy('id', 'desc')->take(100)->get();
-        if (Auth::user()->rule == 0) {
-            $deposit = Deposit::orderBy('id', 'desc')->take(100)->get();
-        } else {
-            $deposit = Deposit::where('user', Auth::user()->id)->orderBy('id', 'desc')->take(100)->get();
-        }
 
-        $data = [
-            'deposit' => $deposit,
-        ];
+        if ($deposit->count()) {
+            $deposit->map(function ($item) {
+                $item->debit = "Rp " . number_format($item->debit, 0, ',', '.');
+                $item->credit = "Rp " . number_format($item->credit, 0, ',', '.');
+                return $item;
+            });
+
+            $data = [
+                'response' => $deposit,
+            ];
+
+            return response()->json($data, 200);
+        } else {
+            $data = [
+                'message' => 'The given data was invalid.',
+                'errors' => [
+                    'vocer' => ["Anda tidak memiliki vocer point"],
+                ],
+            ];
+            return response()->json($data, 422);
+        }
 
         return response()->json(['response' => $data], 200);
     }
