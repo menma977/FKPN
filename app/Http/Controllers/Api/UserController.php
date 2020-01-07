@@ -10,6 +10,7 @@ use App\Model\Investment;
 use App\Model\Ticket;
 use App\Model\VocerPoint;
 use App\User;
+use File;
 use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -202,5 +203,72 @@ class UserController extends Controller
             'deposit' => 'Rp ' . number_format($deposit, 0, ',', '.'),
         ];
         return response()->json($data, 200);
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $user = Auth::user();
+        $this->validate($request, [
+            'image' => 'required|mimes:jpeg,png,jpg',
+        ]);
+        // if ($user->image) {
+        //     $fileName = explode("/", $user->image);
+        //     File::delete($request->root() . '/images' . '/' . $fileName[end($fileName)]);
+        // }
+        $imageName = time() . '.' . $request->image->extension();
+
+        $request->image->move("images", $imageName);
+        $user->image = $request->root() . '/images' . '/' . $imageName;
+        $user->save();
+        return response()->json(['response' => $user->image], 200);
+    }
+
+    public function updateData(Request $request)
+    {
+        $user = Auth::user();
+        if ($request->name) {
+            $this->validate($request, [
+                'name' => 'required|string',
+            ]);
+            $user->name = $request->name;
+        }
+        if ($request->province) {
+            $this->validate($request, [
+                'province' => 'required|string',
+            ]);
+            $user->province = $request->province;
+        }
+        if ($request->district) {
+            $this->validate($request, [
+                'district' => 'required|string',
+            ]);
+            $user->district = $request->district;
+        }
+        if ($request->sub_district) {
+            $this->validate($request, [
+                'sub_district' => 'required|string',
+            ]);
+            $user->sub_district = $request->sub_district;
+        }
+        if ($request->village) {
+            $this->validate($request, [
+                'village' => 'required|string',
+            ]);
+            $user->village = $request->village;
+        }
+        if ($request->number_address) {
+            $this->validate($request, [
+                'number_address' => 'required|string',
+            ]);
+            $user->number_address = $request->number_address;
+        }
+        if ($request->description_address) {
+            $this->validate($request, [
+                'description_address' => 'required|string|min:10',
+            ]);
+            $user->description_address = $request->description_address;
+        }
+        $user->save();
+        return response()->json(['response' => 'Data telah di update'], 200);
     }
 }
