@@ -34,6 +34,7 @@ Route::middleware('auth:api')->group(function () {
         Route::get('show', 'Api\UserController@show')->name('show');
         Route::get('balance', 'Api\UserController@balance')->name('balance');
         Route::post('update', 'Api\UserController@update')->name('update');
+        Route::post('update_x', 'Api\UserController@updateX')->name('updateX');
         Route::post('update/profile/image', 'Api\UserController@updateProfile')->name('updateProfile');
         Route::post('update/profile/data', 'Api\UserController@updateData')->name('updateData');
     });

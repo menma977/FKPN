@@ -187,6 +187,34 @@ class UserController extends Controller
         }
     }
 
+    public function updateX(Request $request)
+    {
+        if (Hash::check($request->password_x, Auth::user()->password_x)) {
+            $this->validate($request, [
+                'password' => 'required',
+                'new_password' => 'required|min:6',
+                'new_c_password' => 'required|same:new_password',
+            ]);
+
+            $user = Auth::user();
+            $user->password_x = bcrypt($request->new_password);
+            $user->save();
+
+            $data = [
+                'response' => 'Password anda saat ini adalah: ' . $request->new_password,
+            ];
+            return response()->json($data, 200);
+        } else {
+            $data = [
+                'message' => 'The given data was invalid.',
+                'errors' => [
+                    'password' => ['Password lama anda tidak cocok'],
+                ],
+            ];
+            return response()->json($data, 422);
+        }
+    }
+
     public function balance()
     {
         $bonus = Bonus::where('user', Auth::user()->id)->sum('credit') - Bonus::where('user', Auth::user()->id)->sum('debit');
@@ -208,19 +236,47 @@ class UserController extends Controller
     public function updateProfile(Request $request)
     {
         $user = Auth::user();
-        $this->validate($request, [
-            'image' => 'required|mimes:jpeg,png,jpg',
-        ]);
-        // if ($user->image) {
-        //     $fileName = explode("/", $user->image);
-        //     File::delete($request->root() . '/images' . '/' . $fileName[end($fileName)]);
-        // }
-        $imageName = time() . '.' . $request->image->extension();
+        if ($request->image) {
+            $this->validate($request, [
+                'image' => 'required|mimes:jpeg,png,jpg',
+            ]);
+            if ($user->image) {
+                $fileName = explode("/", $user->image);
+                File::delete('images/' . $fileName[4]);
+            }
+            $imageName = time() . '.' . $request->image->extension();
 
-        $request->image->move("images", $imageName);
-        $user->image = $request->root() . '/images' . '/' . $imageName;
+            $request->image->move("images", $imageName);
+            $user->image = $request->root() . '/images' . '/' . $imageName;
+        }
+        if ($request->ktp_img) {
+            $this->validate($request, [
+                'ktp_img' => 'required|mimes:jpeg,png,jpg',
+            ]);
+            if ($user->ktp_img) {
+                $fileName = explode("/", $user->ktp_img);
+                File::delete('images/ktps/' . $fileName[4]);
+            }
+            $imageName = time() . '.' . $request->ktp_img->extension();
+
+            $request->ktp_img->move("images/ktps/", $imageName);
+            $user->ktp_img = $request->root() . '/images/ktps' . '/' . $imageName;
+        }
+        if ($request->ktp_img_user) {
+            $this->validate($request, [
+                'ktp_img_user' => 'required|mimes:jpeg,png,jpg',
+            ]);
+            if ($user->ktp_img_user) {
+                $fileName = explode("/", $user->ktp_img_user);
+                File::delete('images/ktps/user/' . $fileName[4]);
+            }
+            $imageName = time() . '.' . $request->ktp_img_user->extension();
+
+            $request->ktp_img_user->move("images/ktps/user/", $imageName);
+            $user->ktp_img_user = $request->root() . '/images/ktps/user/' . $imageName;
+        }
         $user->save();
-        return response()->json(['response' => $user->image], 200);
+        return response()->json(['response' => $user], 200);
     }
 
     public function updateData(Request $request)

@@ -23,6 +23,8 @@ Route::get('/', function () {
     // return view('welcome');
 });
 
+Route::get('/home/{username}', 'HomeController@indexUser')->name('indexUser');
+
 // Auth::routes();
 Auth::routes(['register' => false, 'reset' => false]);
 
