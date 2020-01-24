@@ -8,8 +8,10 @@ use App\Model\Investment;
 use App\Model\Ticket;
 use App\Model\VocerPoint;
 use App\User;
-use Auth;
-use Mail;
+use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class HomeController extends Controller
 {
@@ -26,7 +28,7 @@ class HomeController extends Controller
     /**
      * Show the application dashboard.
      *
-     * @return \Illuminate\Contracts\Support\Renderable
+     * @return Renderable
      */
     public function index()
     {
@@ -84,7 +86,8 @@ class HomeController extends Controller
     /**
      * Show the application dashboard.
      *
-     * @return \Illuminate\Contracts\Support\Renderable
+     * @param $username
+     * @return Renderable
      */
     public function indexUser($username)
     {
@@ -123,6 +126,10 @@ class HomeController extends Controller
         return view('user.binary', $data);
     }
 
+    /**
+     * @param $id
+     * @return RedirectResponse
+     */
     public function package($id)
     {
         $this->middleware('auth');
